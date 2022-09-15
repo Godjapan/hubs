@@ -15,7 +15,7 @@ export const LeaveReason = {
 const reasonMessages = defineMessages({
   [LeaveReason.leaveRoom]: {
     id: "leave-room-modal.leave-room.message",
-    defaultMessage: "ルームから退出してよろしいですか？"
+    defaultMessage: "Are you sure you want to leave the room?"
   },
   [LeaveReason.joinRoom]: {
     id: "leave-room-modal.join-room.message",
