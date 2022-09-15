@@ -191,8 +191,8 @@ function updateUI(world, camera) {
   const snapBtnObj = world.eid2obj.get(CameraTool.snapRef[camera]);
   const recBtnObj = world.eid2obj.get(CameraTool.recVideoRef[camera]);
   const cancelBtnObj = world.eid2obj.get(CameraTool.cancelRef[camera]);
-  const nextBtnObj = world.eid2obj.get(CameraTool.nextButtonRef[camera]);
-  const prevBtnObj = world.eid2obj.get(CameraTool.prevButtonRef[camera]);
+  const nextBtnObj = world.eid2obj.get(CameraTool.button_next[camera]);
+  const prevBtnObj = world.eid2obj.get(CameraTool.button_prev[camera]);
   const countdownLblObj = world.eid2obj.get(CameraTool.countdownLblRef[camera]);
   const captureDurLblObj = world.eid2obj.get(CameraTool.captureDurLblRef[camera]);
   const screenObj = world.eid2obj.get(CameraTool.screenRef[camera]);
@@ -208,7 +208,7 @@ function updateUI(world, camera) {
     CameraTool.state[camera] === CAMERA_STATE.RECORDING_VIDEO;
 
   const inVR = AFRAME.scenes[0].is("vr-mode");
-  const showViewfinder = !inVR || hasComponent(world, Held, camera) || !isIdle;
+  const showViewfinder = !inVR || (hasComponent(world, Held, camera) || !isIdle);
   screenObj.visible = showViewfinder;
   selfieScreenObj.visible = showViewfinder;
 
@@ -246,6 +246,10 @@ function updateUI(world, camera) {
     sndToggleLblObj.text = captureAudio ? "Sound ON" : "Sound OFF";
     sndToggleLblObj.sync();
   }
+
+  // TODO HACK hidden objects are still not having their matricies updated correctly
+  // Seems like a regression of #5421
+  snapMenuObj.matrixNeedsUpdate = true;
 }
 
 let snapPixels;
@@ -285,7 +289,7 @@ const cameraToolEnterQuery = enterQuery(cameraToolQuery);
 const cameraToolExitQuery = exitQuery(cameraToolQuery);
 
 export function cameraToolSystem(world) {
-  cameraToolEnterQuery(world).forEach(function (eid) {
+  cameraToolEnterQuery(world).forEach(function(eid) {
     const renderTarget = new THREE.WebGLRenderTarget(RENDER_WIDTH, RENDER_HEIGHT, {
       format: THREE.RGBAFormat,
       minFilter: THREE.LinearFilter,
@@ -304,16 +308,16 @@ export function cameraToolSystem(world) {
 
     const screenObj = world.eid2obj.get(CameraTool.screenRef[eid]);
     screenObj.material.map = renderTarget.texture;
-    screenObj.material.onBeforeRender = setRendertargetDirty;
+    screenObj.onBeforeRender = setRendertargetDirty;
 
     const selfieScreenObj = world.eid2obj.get(CameraTool.selfieScreenRef[eid]);
     selfieScreenObj.material.map = renderTarget.texture;
-    selfieScreenObj.material.onBeforeRender = setRendertargetDirty;
+    selfieScreenObj.onBeforeRender = setRendertargetDirty;
 
     renderTargets.set(eid, renderTarget);
   });
 
-  cameraToolExitQuery(world).forEach(function (eid) {
+  cameraToolExitQuery(world).forEach(function(eid) {
     const renderTarget = renderTargets.get(eid);
     renderTarget.dispose();
     renderTargets.delete(eid);
@@ -346,11 +350,11 @@ export function cameraToolSystem(world) {
         CameraTool.snapTime[camera] = world.time.elapsed + 3000;
       }
 
-      if (clicked(CameraTool.nextButtonRef[camera])) {
+      if (clicked(CameraTool.button_next[camera])) {
         CameraTool.captureDurIdx[camera] = (CameraTool.captureDurIdx[camera] + 1) % CAPTURE_DURATIONS.length;
       }
 
-      if (clicked(CameraTool.prevButtonRef[camera])) {
+      if (clicked(CameraTool.button_prev[camera])) {
         CameraTool.captureDurIdx[camera] =
           CameraTool.captureDurIdx[camera] === 0 ? CAPTURE_DURATIONS.length - 1 : CameraTool.captureDurIdx[camera] - 1;
       }

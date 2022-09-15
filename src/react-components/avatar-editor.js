@@ -17,9 +17,6 @@ import styles from "../assets/stylesheets/avatar-editor.scss";
 
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
-import dropdownArrowUrl from "../assets/images/dropdown_arrow.png";
-import dropdownArrow2xUrl from "../assets/images/dropdown_arrow@2x.png";
-
 const delistAvatarInfoMessage = defineMessage({
   id: "avatar-editor.delist-avatar-info",
   defaultMessage:
@@ -29,8 +26,10 @@ const delistAvatarInfoMessage = defineMessage({
 const AVATARS_API = "/api/v1/avatars";
 
 const defaultEditors = [
-  // TODO This previously contain tryquilt.io.  We should re-evaluate whether these types of editors are still desired,
-  // and change the related code accordingly.
+  {
+    name: "Quilt",
+    url: "https://tryquilt.io/?gltf=$AVATAR_GLTF"
+  }
 ];
 const useAllowedEditors = true;
 const allowedEditors = [
@@ -366,7 +365,11 @@ class AvatarEditor extends Component {
           <FormattedMessage id="avatar-editor.custom-avatar-option" defaultMessage="Custom GLB..." />
         </option>
       </select>
-      <img className="arrow" src={dropdownArrowUrl} srcSet={`${dropdownArrow2xUrl} 2x`} />
+      <img
+        className="arrow"
+        src="../assets/images/dropdown_arrow.png"
+        srcSet="../assets/images/dropdown_arrow@2x.png 2x"
+      />
     </div>
   );
 

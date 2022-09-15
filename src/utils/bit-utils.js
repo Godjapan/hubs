@@ -1,6 +1,5 @@
 import { defineQuery, hasComponent } from "bitecs";
 import { $isStringType, NetworkedMediaFrame } from "../bit-components";
-import { findAncestor } from "./three-utils";
 
 const queries = new Map();
 export function anyEntityWith(world, component) {
@@ -96,9 +95,4 @@ export function defineNetworkSchema(Component) {
       }
     }
   };
-}
-
-export function findAncestorEntity(world, eid, predicate) {
-  const obj = findAncestor(world.eid2obj.get(eid), o => o.eid && predicate(o.eid));
-  return obj && obj.eid;
 }

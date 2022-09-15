@@ -1,7 +1,6 @@
 import { computeObjectAABB, getBox, getScaleCoefficient } from "../utils/auto-box-collider";
 import {
   resolveUrl,
-  fetchContentType,
   getDefaultResolveQuality,
   injectCustomShaderChunks,
   addMeshScaleAnimation,
@@ -17,6 +16,7 @@ import {
 } from "../utils/media-url-utils";
 import { addAnimationComponents } from "../utils/animation";
 
+import configs from "../utils/configs";
 import loadingObjectSrc from "../assets/models/LoadingObject_Atom.glb";
 import { SOUND_MEDIA_LOADING, SOUND_MEDIA_LOADED } from "../systems/sound-effects-system";
 import { loadModel } from "./gltf-model-plus";
@@ -26,6 +26,7 @@ import { waitForDOMContentLoaded } from "../utils/async-utils";
 import { SHAPE } from "three-ammo/constants";
 import { addComponent, entityExists, removeComponent } from "bitecs";
 import { MediaLoading } from "../bit-components";
+import qsTruthy from "../utils/qs_truthy"; // cyzyspace
 
 let loadingObject;
 
@@ -34,6 +35,12 @@ waitForDOMContentLoaded().then(() => {
     loadingObject = gltf;
   });
 });
+
+const fetchContentType = url => {
+  return fetch(url, { method: "HEAD" }).then(r => r.headers.get("content-type"));
+};
+
+const disableDynamicRoomPath = qsTruthy("disableDynamicRoomPath"); // cyzyspace
 
 AFRAME.registerComponent("media-loader", {
   schema: {
@@ -355,6 +362,12 @@ AFRAME.registerComponent("media-loader", {
         src = this.data.src = `${window.location.origin}${window.location.pathname}${window.location.search}${src}`;
       }
 
+      //cyzyspace: replace placeholders.
+      if (!disableDynamicRoomPath) {
+        const roomId = window.location.pathname.split("/")[1] || configs.feature("default_room_id");
+        src = this.data.src = src.replace("__ROOM_ID__", roomId);
+      }
+
       let canonicalUrl = src;
       let canonicalAudioUrl = null; // set non-null only if audio track is separated from video track (eg. 360 video)
       let accessibleUrl = src;
@@ -477,7 +490,32 @@ AFRAME.registerComponent("media-loader", {
                 isFlat: true
               });
             } else if (this.data.mediaOptions.href) {
-              this.el.setAttribute("hover-menu__link", { template: "#link-hover-menu", isFlat: true });
+              // cyzyspace
+              const href = this.data.mediaOptions.href;
+              if (href.match("__ROOM_ID__")) {
+                const roomId = window.location.pathname.split("/")[1] || configs.feature("default_room_id");
+                const replacedHref = href.replace("__ROOM_ID__", roomId);
+
+                const validationUrl = new URL(replacedHref);
+                const searchParams = validationUrl.searchParams;
+                searchParams.append("validate", "1");
+                validationUrl.search = searchParams.toString();
+
+                fetch(validationUrl.toString(), { method: "GET" })
+                  .then(v => {
+                    if (v.status === 200) {
+                      this.el.setAttribute("hover-menu__link", { template: "#link-hover-menu", isFlat: true });
+                    } else {
+                      console.log("head response - error:", v.status);
+                    }
+                  })
+                  .catch(() => {
+                    console.log("head request - failed:", replacedHref);
+                  });
+                this.data.mediaOptions.href = replacedHref;
+              } else {
+                this.el.setAttribute("hover-menu__link", { template: "#link-hover-menu", isFlat: true });
+              }
             }
           },
           { once: true }

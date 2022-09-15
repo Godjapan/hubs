@@ -1,7 +1,8 @@
+import { themes } from "../react-components/styles/theme";
 import { waitForDOMContentLoaded } from "./async-utils";
 import configs from "./configs";
 
-// NOTE these should be synchronized with the top of shared.scss
+// Node these should be synchronized with the top of shared.scss
 const DEFAULT_ACTION_COLOR = "#FF3464";
 const DEFAULT_ACTION_COLOR_LIGHT = "#FF74A4";
 
@@ -22,93 +23,20 @@ const DEFAULT_COLORS = {
   "nametag-border-color-raised-hand": "#FFCD74"
 };
 
-const config = (() => {
-  let config = process.env.APP_CONFIG;
-
-  // Storybook includes environment variables as a string
-  // https://storybook.js.org/docs/react/configure/environment-variables
-  if (!config && process.env.STORYBOOK_APP_CONFIG) {
-    config = JSON.parse(process.env.STORYBOOK_APP_CONFIG);
-  }
-
-  if (!config) {
-    config = window.APP_CONFIG;
-  }
-
-  if (config?.theme?.error) {
-    console.error(
-      `Custom themes failed to load.\n${config.theme.error}\nIf you are an admin, reconfigure your themes in the admin panel.`
-    );
-  }
-
-  return config;
-})();
-
-const themes = config?.theme?.themes || [];
-
-function getDarkModeQuery() {
-  // window.matchMedia is not available when this module is imported in node.js,
-  // which happens when using `npm run login` for Hubs Cloud customization.
-  // So we return a dummy MediaQueryList instead.
-  if (typeof window.matchMedia !== "undefined") {
-    return window.matchMedia("(prefers-color-scheme: dark)");
-  } else {
-    return { matches: false, addEventListener: () => {}, removeEventListener: () => {} };
-  }
-}
-
-function registerDarkModeQuery(changeListener) {
-  const darkModeQuery = getDarkModeQuery();
-
-  // This is a workaround for old Safari.
-  // Prior to Safari 14, MediaQueryList is based on EventTarget, so you must use
-  // addListener() and removeListener() to observe media query lists.
-  // https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList/addListener
-  // We may remove this workaround when no one will use Safari 13 or before.
-  if (darkModeQuery.addEventListener) {
-    darkModeQuery.addEventListener("change", changeListener);
-  } else {
-    darkModeQuery.addListener(changeListener);
-  }
-
-  const removeListener = () => {
-    if (darkModeQuery.removeEventListener) {
-      darkModeQuery.removeEventListener("change", changeListener);
-    } else {
-      darkModeQuery.removeListener(changeListener);
-    }
-  };
-
-  return [darkModeQuery, removeListener];
-}
-
-function getDefaultTheme() {
-  return themes.find(t => t.default) || themes[0];
-}
-
-function tryGetTheme(themeId) {
-  if (!Array.isArray(themes)) return;
-
-  const theme = themeId && themes.find(t => t.id === themeId);
-  if (theme) {
-    return theme;
-  } else {
-    const darkMode = getDarkModeQuery().matches;
-    return (darkMode && themes.find(t => t.darkModeDefault)) || getDefaultTheme();
-  }
-}
-
-function getCurrentTheme() {
-  const preferredThemeId = window.APP?.store?.state?.preferences?.theme;
-  return tryGetTheme(preferredThemeId);
-}
-
 function getThemeColor(name) {
-  const theme = getCurrentTheme();
-  return theme?.variables?.[name] || DEFAULT_COLORS[name];
+  const themeId = window.APP?.store?.state?.preferences?.theme;
+
+  const theme =
+    (themeId && configs.APP_CONFIG?.theme?.themes?.find(theme => theme.id === themeId)) ||
+    configs.APP_CONFIG?.theme?.themes?.find(theme => theme.default === true);
+  if (theme?.variables?.[name]) {
+    return theme.variables[name];
+  }
+
+  return DEFAULT_COLORS[name];
 }
 
-function updateTextButtonColors() {
+function activateTheme() {
   const actionColor = getThemeColor("action-color");
   const actionHoverColor = getThemeColor("action-color-highlight");
 
@@ -144,76 +72,29 @@ function updateTextButtonColors() {
         `textHoverColor: #fff; textColor: #fff; backgroundColor: ${actionColor}; backgroundHoverColor: ${actionHoverColor}`
       );
   }
+
+  window.dispatchEvent(new CustomEvent("update_theme"));
 }
 
-const themeChangedListeners = new Map();
-function registerThemeChangedListener(listener) {
-  window.APP.store.addEventListener("themechanged", listener);
-  const [_darkModeQuery, removeDarkModeListener] = registerDarkModeQuery(listener);
-
-  themeChangedListeners.set(listener, {
-    removeListener: () => {
-      window.APP.store.removeEventListener("themechanged", listener);
-      removeDarkModeListener();
+const onStoreChanged = (function() {
+  let themeId;
+  return function onStoreChanged() {
+    const newThemeId = window.APP?.store?.state?.preferences?.theme;
+    if (themeId !== newThemeId) {
+      themeId = newThemeId;
+      activateTheme();
     }
-  });
-}
-
-function removeThemeChangedListener(listener) {
-  if (themeChangedListeners.has(listener)) {
-    themeChangedListeners.get(listener).removeListener();
-    themeChangedListeners.delete(listener);
-  }
-}
-
-// window.APP.store may not be available when onThemeChanged is called, so we
-// stash listeners until waitForDOMContentLoaded.
-const stashedThemeChangedListeners = new Set();
-function onThemeChanged(listener) {
-  const storeIsAvailable = !!(window.APP?.store);
-  if (storeIsAvailable) {
-    registerThemeChangedListener(listener);
-  } else {
-    stashedThemeChangedListeners.add(listener);
-  }
-
-  return () => {
-    if (stashedThemeChangedListeners.has(listener)) {
-      stashedThemeChangedListeners.delete(listener);
-    }
-    removeThemeChangedListener(listener);
   };
-}
-
-function registerStashedThemeChangedListeners() {
-  for (const listener of stashedThemeChangedListeners) {
-    registerThemeChangedListener(listener);
-  }
-  stashedThemeChangedListeners.clear();
-}
+})();
 
 waitForDOMContentLoaded().then(() => {
-  if (process.env.NODE) {
-    // We're running in node.js, which happens when "npm run login" is used, for example,
-    // so don't bother doing anything UI related.
-    return;
-  }
-
   if (configs.APP_CONFIG && configs.APP_CONFIG.theme && configs.APP_CONFIG.theme["dark-theme"]) {
     document.body.classList.add("dark-theme");
   } else {
     document.body.classList.add("light-theme");
   }
-  updateTextButtonColors();
-  onThemeChanged(updateTextButtonColors);
-  if (window.APP?.store) {
-    registerStashedThemeChangedListeners();
-  } else {
-    console.warn(
-      "utils/theme.js: Skipped theme preference listeners, since window.APP.store is not available. " +
-        "This should only happen when running Storybook."
-    );
-  }
+  activateTheme();
+  window.APP?.store?.addEventListener("statechanged", onStoreChanged);
 });
 
 function applyThemeToTextButton(el, highlighted) {
@@ -229,13 +110,8 @@ function applyThemeToTextButton(el, highlighted) {
   );
 }
 
-export {
-  applyThemeToTextButton,
-  getCurrentTheme,
-  getDefaultTheme,
-  getThemeColor,
-  onThemeChanged,
-  registerDarkModeQuery,
-  themes,
-  tryGetTheme,
-};
+function getDefaultTheme() {
+  return themes.find(t => t.default) || themes[0];
+}
+
+export { applyThemeToTextButton, getThemeColor, getDefaultTheme };

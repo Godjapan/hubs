@@ -241,6 +241,7 @@ export class DialogAdapter extends EventEmitter {
   async connect({
     serverUrl,
     roomId,
+    joinToken,
     serverParams,
     scene,
     clientId,
@@ -250,6 +251,7 @@ export class DialogAdapter extends EventEmitter {
   }) {
     this._serverUrl = serverUrl;
     this._roomId = roomId;
+    this._joinToken = joinToken;
     this._serverParams = serverParams;
     this._clientId = clientId;
     this.scene = scene;
@@ -465,6 +467,7 @@ export class DialogAdapter extends EventEmitter {
     await this.connect({
       serverUrl: newServerUrl,
       roomId: this._roomId,
+      joinToken: APP.hubChannel.token,
       serverParams,
       scene: this.scene,
       clientId: this._clientId,
@@ -744,7 +747,7 @@ export class DialogAdapter extends EventEmitter {
       device: this._device,
       rtpCapabilities: this._mediasoupDevice.rtpCapabilities,
       sctpCapabilities: this._useDataChannel ? this._mediasoupDevice.sctpCapabilities : undefined,
-      token: APP.hubChannel.token
+      token: this._joinToken
     });
 
     if (this._localMediaStream) {
@@ -952,7 +955,7 @@ export class DialogAdapter extends EventEmitter {
       .request("kick", {
         room_id: this.room,
         user_id: clientId,
-        token: APP.hubChannel.token
+        token: this._joinToken
       })
       .then(() => {
         document.body.dispatchEvent(new CustomEvent("kicked", { detail: { clientId: clientId } }));

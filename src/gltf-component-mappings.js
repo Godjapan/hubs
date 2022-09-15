@@ -129,7 +129,7 @@ import { createElementEntity } from "./utils/jsx-entity";
 /** @jsx createElementEntity */ createElementEntity;
 
 AFRAME.GLTFModelPlus.registerComponent("media-frame", "media-frame", (el, _componentName, componentData) => {
-  const eid = renderAsEntity(APP.world, <entity mediaFrame={componentData} />);
+  const eid = renderAsEntity(APP.world, <entity media-frame={componentData} />);
 
   addComponent(APP.world, Networked, eid);
 
@@ -350,8 +350,16 @@ AFRAME.GLTFModelPlus.registerComponent(
   "trigger-volume",
   "trigger-volume",
   (el, componentName, componentData, components, indexToEntityMap) => {
-    const { size, target, enterComponent, enterProperty, enterValue, leaveComponent, leaveProperty, leaveValue } =
-      componentData;
+    const {
+      size,
+      target,
+      enterComponent,
+      enterProperty,
+      enterValue,
+      leaveComponent,
+      leaveProperty,
+      leaveValue
+    } = componentData;
 
     let enterComponentMapping, leaveComponentMapping, targetEntity;
 

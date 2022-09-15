@@ -56,5 +56,8 @@ export const Landing = () => (
     <Button preset="landing" thick>
       Get Started
     </Button>
+    <Button preset="landing" thin>
+      Have a room code?
+    </Button>
   </Column>
 );
