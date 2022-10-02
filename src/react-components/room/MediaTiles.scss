@@ -83,7 +83,13 @@
   border: 1px solid theme.$tile-button-border-color;
 
   svg {
-    color: theme.$tile-button-text-color;
+    *[stroke=\#000] {
+      stroke: theme.$tile-button-text-color;
+    }
+
+    *[fill=\#000] {
+      fill: theme.$tile-button-text-color;
+    }
   }
 }
 
@@ -112,7 +118,14 @@
   position: absolute;
   top: 8px;
   left: 8px;
-  color: theme.$favorite-color;
+
+  *[stroke=\#000] {
+    stroke: theme.$favorite-color;
+  }
+
+  *[fill=\#000] {
+    fill: theme.$favorite-color;
+  }
 }
 
 :local(.info) {
@@ -148,14 +161,32 @@
   }
 
   a svg {
-    color: theme.$link-color;
+    *[stroke=\#000] {
+      stroke: theme.$link-color;
+    }
+  
+    *[fill=\#000] {
+      fill: theme.$link-color;
+    }
 
     &:hover {
-      color: theme.$link-color-hover;
+      *[stroke=\#000] {
+        stroke: theme.$link-color-hover;
+      }
+    
+      *[fill=\#000] {
+        fill: theme.$link-color-hover;
+      }
     }
 
     &:active {
-      color: theme.$link-color-pressed;
+      *[stroke=\#000] {
+        stroke: theme.$link-color-pressed;
+      }
+    
+      *[fill=\#000] {
+        fill: theme.$link-color-pressed;
+      }
     }
   }
 }
@@ -181,6 +212,13 @@
 
   svg {
     margin-bottom: 16px;
-    color: theme.$tile-text-color;
+
+    *[stroke=\#000] {
+      stroke: theme.$tile-text-color;
+    }
+
+    *[fill=\#000] {
+      fill: theme.$tile-text-color;
+    }
   }
 }

@@ -1,10 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { injectIntl, FormattedMessage } from "react-intl";
-import { onThemeChanged, getThemeColor } from "../utils/theme";
+import { getColorSchemePref } from "../utils/get-color-scheme-pref";
 import classNames from "classnames";
 
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+// It seems we need to use require to import modules
+// under the three/examples/js to avoid tree shaking
+// in webpack production mode.
+require("three/examples/js/controls/OrbitControls");
+require("three/examples/js/loaders/GLTFLoader");
 
 import { createDefaultEnvironmentMap } from "../components/environment-map";
 import { loadGLTF } from "../components/gltf-model-plus";
@@ -13,9 +17,6 @@ import { ensureAvatarMaterial, MAT_NAME } from "../utils/avatar-utils";
 import { createImageBitmap, disposeImageBitmap } from "../utils/image-bitmap-utils";
 import { proxiedUrlFor } from "../utils/media-url-utils";
 import styles from "../assets/stylesheets/avatar-preview.scss";
-
-import warningIconUrl from "../assets/images/warning_icon.png";
-import warningIcon2xUrl from "../assets/images/warning_icon@2x.png";
 
 const TEXTURE_PROPS = {
   base_map: ["map"],
@@ -65,7 +66,11 @@ function fitBoxInFrustum(camera, box, center, margin = DEFAULT_MARGIN) {
 }
 
 function getThemeBackground() {
-  return new THREE.Color(getThemeColor("background3-color") || 0xeaeaea);
+  const currentTheme = APP?.store?.state?.preferences?.theme;
+  const themes = window.APP_CONFIG?.theme?.themes;
+  const currentThemeObject = themes?.find(t => t.id === currentTheme) || getColorSchemePref();
+  const previewBackgroundColor = new THREE.Color(currentThemeObject?.variables["background3-color"] || 0xeaeaea);
+  return previewBackgroundColor;
 }
 
 class AvatarPreview extends Component {
@@ -86,7 +91,7 @@ class AvatarPreview extends Component {
     this.scene = new THREE.Scene();
 
     this.camera = new THREE.PerspectiveCamera(55, this.canvas.clientWidth / this.canvas.clientHeight, 0.1, 1000);
-    this.controls = new OrbitControls(this.camera, this.canvas);
+    this.controls = new THREE.OrbitControls(this.camera, this.canvas);
     this.controls.screenSpacePanning = true;
     this.controls.enableKeys = true;
 
@@ -124,7 +129,6 @@ class AvatarPreview extends Component {
       this.mixer && this.mixer.update(dt);
       this.previewRenderer.render(this.scene, this.camera);
     });
-    this.removeThemeChangedListener = onThemeChanged(() => this.previewRenderer.setClearColor(getThemeBackground()));
     window.addEventListener("resize", this.resize);
     this.resize();
 
@@ -186,7 +190,6 @@ class AvatarPreview extends Component {
 
     Object.values(this.imageBitmaps).forEach(img => disposeImageBitmap(img));
     window.removeEventListener("resize", this.resize);
-    this.removeThemeChangedListener();
   };
 
   componentDidUpdate = async oldProps => {
@@ -370,21 +373,27 @@ class AvatarPreview extends Component {
     return (
       <div className={classNames(styles.preview, this.props.className)}>
         {!this.props.avatarGltfUrl ||
-          (this.state.loading && !this.state.error && (
-            <div className="loader">
-              <div className="loader-center" />
+          (this.state.loading &&
+            !this.state.error && (
+              <div className="loader">
+                <div className="loader-center" />
+              </div>
+            ))}
+        {this.props.avatarGltfUrl &&
+          (this.state.error && !this.state.loading) && (
+            <div className="error">
+              <img
+                src="../assets/images/warning_icon.png"
+                srcSet="../assets/images/warning_icon@2x.png 2x"
+                className="error-icon"
+              />
+              <FormattedMessage
+                id="avatar-preview.loading-failed"
+                defaultMessage="Loading failed{linebreak}Please choose another avatar"
+                values={{ linebreak: <br /> }}
+              />
             </div>
-          ))}
-        {this.props.avatarGltfUrl && this.state.error && !this.state.loading && (
-          <div className="error">
-            <img src={warningIconUrl} srcSet={`${warningIcon2xUrl} 2x`} className="error-icon" />
-            <FormattedMessage
-              id="avatar-preview.loading-failed"
-              defaultMessage="Loading failed{linebreak}Please choose another avatar"
-              values={{ linebreak: <br /> }}
-            />
-          </div>
-        )}
+          )}
         <canvas ref={c => (this.canvas = c)} />
       </div>
     );

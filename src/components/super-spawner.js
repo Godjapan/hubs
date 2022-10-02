@@ -4,8 +4,6 @@ import { waitForEvent } from "../utils/async-utils";
 import { ObjectContentOrigins } from "../object-types";
 import { paths } from "../systems/userinput/paths";
 import { getBox, getScaleCoefficient } from "../utils/auto-box-collider";
-import { addComponent } from "bitecs";
-import { Held, HeldRemoteLeft, HeldRemoteRight } from "../bit-components";
 
 const COLLISION_LAYERS = require("../constants").COLLISION_LAYERS;
 
@@ -153,6 +151,15 @@ AFRAME.registerComponent("super-spawner", {
     const willAnimateFromCursor =
       this.data.animateFromCursor &&
       (userinput.get(paths.actions.rightHand.matrix) || userinput.get(paths.actions.leftHand.matrix));
+    if (!willAnimateFromCursor) {
+      if (left) {
+        interaction.state.leftRemote.held = spawnedEntity;
+        interaction.state.leftRemote.spawning = true;
+      } else {
+        interaction.state.rightRemote.held = spawnedEntity;
+        interaction.state.rightRemote.spawning = true;
+      }
+    }
     this.activateCooldown();
     await waitForEvent("model-loaded", spawnedEntity);
 
@@ -175,11 +182,10 @@ AFRAME.registerComponent("super-spawner", {
         easing: "easeInOutBack"
       });
     } else {
-      addComponent(APP.world, Held, spawnedEntity.eid);
       if (left) {
-        addComponent(APP.world, HeldRemoteLeft, spawnedEntity.eid);
+        interaction.state.leftRemote.spawning = false;
       } else {
-        addComponent(APP.world, HeldRemoteRight, spawnedEntity.eid);
+        interaction.state.rightRemote.spawning = false;
       }
     }
 

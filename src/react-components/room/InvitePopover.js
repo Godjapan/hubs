@@ -23,13 +23,11 @@ function InvitePopoverContent({ url, embed, inviteRequired, fetchingInvite, invi
             value={url}
             buttonPreset="accent3"
           />
-          {embed && (
-            <CopyableTextInputField
-              label={<FormattedMessage id="invite-popover.embed-code" defaultMessage="Embed Code" />}
-              value={embed}
-              buttonPreset="accent5"
-            />
-          )}
+          <CopyableTextInputField
+            label={<FormattedMessage id="invite-popover.embed-code" defaultMessage="Embed Code" />}
+            value={embed}
+            buttonPreset="accent5"
+          />
         </>
       )}
     </Column>
@@ -38,7 +36,7 @@ function InvitePopoverContent({ url, embed, inviteRequired, fetchingInvite, invi
 
 InvitePopoverContent.propTypes = {
   url: PropTypes.string.isRequired,
-  embed: PropTypes.string,
+  embed: PropTypes.string.isRequired,
   inviteRequired: PropTypes.bool,
   fetchingInvite: PropTypes.bool,
   inviteUrl: PropTypes.string,

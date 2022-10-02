@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import configs from "../../utils/configs";
 import { SignInModal, SignInStep, SubmitEmail, WaitForVerification, SignInComplete } from "./SignInModal";
-import { TERMS, PRIVACY } from "../../constants";
 
 // TODO: Migrate to use AuthContext
 export function RoomSignInModalContainer({ onClose, step, onSubmitEmail, message, onContinue }) {
@@ -17,9 +16,9 @@ export function RoomSignInModalContainer({ onClose, step, onSubmitEmail, message
             onSubmitEmail(email);
           }}
           initialEmail={cachedEmail}
-          termsUrl={configs.link("terms_of_use", TERMS)}
+          termsUrl={configs.link("terms_of_use", "https://github.com/mozilla/hubs/blob/master/TERMS.md")}
           showTerms={configs.feature("show_terms")}
-          privacyUrl={configs.link("privacy_notice", PRIVACY)}
+          privacyUrl={configs.link("privacy_notice", "https://github.com/mozilla/hubs/blob/master/PRIVACY.md")}
           showPrivacy={configs.feature("show_privacy")}
           message={message}
         />
@@ -40,6 +39,6 @@ RoomSignInModalContainer.propTypes = {
   onClose: PropTypes.func,
   onSubmitEmail: PropTypes.func,
   step: PropTypes.string,
-  message: PropTypes.object,
+  message: PropTypes.string,
   onContinue: PropTypes.func
 };

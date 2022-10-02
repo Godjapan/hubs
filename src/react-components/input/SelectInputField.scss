@@ -39,7 +39,13 @@ $input-height: 40px;
   }
 
   svg {
-    color: theme.$text1-color;
+    *[stroke=\#000] {
+      stroke: theme.$text1-color;
+    }
+
+    *[fill=\#000] {
+      fill: theme.$text1-color;
+    }
   }
 }
 

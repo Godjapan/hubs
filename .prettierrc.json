@@ -1,5 +1,4 @@
 {
   "printWidth": 120,
-  "trailingComma": "none",
-  "arrowParens": "avoid"
+  "parser": "babylon"
 }

@@ -114,7 +114,13 @@
   width: 24px;
 
   svg {
-    color: theme.$input-icon-color;
+    *[stroke=\#000] {
+      stroke: theme.$input-icon-color;
+    }
+
+    *[fill=\#000] {
+      fill: theme.$input-icon-color;
+    }
   }
 }
 

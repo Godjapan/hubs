@@ -40,7 +40,13 @@
   }
 
   svg {
-    color: theme.$text1-color;
+    *[stroke=\#000] {
+      stroke: theme.$text1-color;
+    }
+
+    *[fill=\#000] {
+      fill: theme.$text1-color;
+    }
   }
 
   // Hack to make hover styles overlap popover border and look correct.
@@ -60,7 +66,13 @@
     font-weight: theme.$font-weight-bold;
 
     svg {
-      color: theme.$active-text-color;
+      *[stroke=\#000] {
+        stroke: theme.$active-text-color;
+      }
+  
+      *[fill=\#000] {
+        fill: theme.$active-text-color;
+      }
     }
   }
 
@@ -106,7 +118,13 @@ button:local(.more-menu-item-target) {
   }
 
   svg {
-    color: theme.$text1-color;
+    *[stroke=\#000] {
+      stroke: theme.$text1-color;
+    }
+
+    *[fill=\#000] {
+      fill: theme.$text1-color;
+    }
   }
 
   @media(min-width: theme.$breakpoint-lg) {

@@ -46,7 +46,14 @@ $mobile-breakpoint-width: 450px;
 
   width: 48px;
   height: 48px;
-  color: theme.$text1-color;
+
+  *[stroke=\#000] {
+    stroke: theme.$text1-color;
+  }
+
+  *[fill=\#000] {
+    fill: theme.$text1-color;
+  }
 }
 
 :local(.icon-disabled) {
@@ -56,7 +63,14 @@ $mobile-breakpoint-width: 450px;
 
   width: 48px;
   height: 48px;
-  color: theme.$text2-color;
+
+  *[stroke=\#000] {
+    stroke: theme.$text2-color;
+  }
+
+  *[fill=\#000] {
+    fill: theme.$text2-color;
+  }
 }
 
 :local(.icon-container) {
@@ -91,7 +105,8 @@ $mobile-breakpoint-width: 450px;
 }
 
 :local(.popover-arrow) {
-  color: theme.$black;
+  fill: theme.$black;
+  stroke: theme.$black;
 }
 
 :local(.popover-content) {
@@ -114,7 +129,13 @@ $mobile-breakpoint-width: 450px;
 }
 
 :local(.info-icon) {
-  color: theme.$darkgrey;
+  *[stroke=\#000] {
+    stroke: theme.$darkgrey;
+  }
+
+  *[fill=\#000] {
+    fill: theme.$darkgrey;
+  }
 }
 
 :local(.level-bar) {

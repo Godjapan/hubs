@@ -165,6 +165,9 @@ const NEXT_MODES = {
   [CAMERA_MODE_THIRD_PERSON_FAR]: CAMERA_MODE_FIRST_PERSON
 };
 
+// cyzyspace
+const isHeadSet = AFRAME.utils.device.checkHeadsetConnected();
+
 const ensureLightsAreSeenByCamera = function(o) {
   if (o.isLight) {
     o.layers.enable(Layers.CAMERA_LAYER_INSPECT);
@@ -205,13 +208,13 @@ export class CameraSystem {
     this.mode = CAMERA_MODE_SCENE_PREVIEW;
     this.snapshot = { audioTransform: new THREE.Matrix4(), matrixWorld: new THREE.Matrix4() };
     this.audioSourceTargetTransform = new THREE.Matrix4();
+    this.isTPS = false; // cyzyspace
 
     if (customFOV) {
       this.viewingCamera.fov = customFOV;
     }
     this.viewingCamera.layers.enable(Layers.CAMERA_LAYER_VIDEO_TEXTURE_TARGET);
     this.viewingCamera.layers.enable(Layers.CAMERA_LAYER_FIRST_PERSON_ONLY);
-    this.viewingCamera.layers.enable(Layers.CAMERA_LAYER_UI);
 
     // xr.updateCamera gets called every render to copy the active cameras properties to the XR cameras. We also want to copy layers.
     // TODO this logic should either be moved into THREE or removed when we ditch aframe camera system
@@ -241,6 +244,12 @@ export class CameraSystem {
       bg.layers.set(Layers.CAMERA_LAYER_INSPECT);
       this.viewingRig.object3D.add(bg);
     });
+  }
+
+  // cyzyspace
+  toggleTPS() {
+    this.isTPS = true;
+    return this.mode;
   }
 
   nextMode() {
@@ -360,12 +369,15 @@ export class CameraSystem {
       if (this.mode === CAMERA_MODE_INSPECT && scene.audioListener.parent !== this.avatarPOV.object3D) {
         this.avatarPOV.object3D.add(scene.audioListener);
       } else if (
-        (this.mode === CAMERA_MODE_FIRST_PERSON ||
-          this.mode === CAMERA_MODE_THIRD_PERSON_NEAR ||
-          this.mode === CAMERA_MODE_THIRD_PERSON_FAR) &&
-        scene.audioListener.parent !== this.viewingCamera
+        this.mode === CAMERA_MODE_FIRST_PERSON &&
+        scene.audioListener.parent !== this.viewingCamera // cyzyspace
       ) {
         this.viewingCamera.add(scene.audioListener);
+      } else if (
+        (this.mode === CAMERA_MODE_THIRD_PERSON_NEAR || this.mode === CAMERA_MODE_THIRD_PERSON_FAR) &&
+        scene.audioListener.parent !== this.avatarPOV.object3D // cyzyspace
+      ) {
+        this.avatarPOV.object3D.add(scene.audioListener);
       }
     }
   }
@@ -417,7 +429,7 @@ export class CameraSystem {
             scale
           )
         );
-        scene.systems["hubs-systems"].characterController.fly = true;
+        scene.systems["hubs-systems"].characterController.fly = false; //cyzy space
         this.avatarPOV.object3D.updateMatrices();
         setMatrixWorld(this.avatarPOV.object3D, this.viewingCamera.matrixWorld);
       }
@@ -448,10 +460,25 @@ export class CameraSystem {
         this.nextMode();
       }
 
+      // cyzyspace
+      if (!isHeadSet && this.isTPS) {
+        const camera = scene.camera;
+        if (this.mode === CAMERA_MODE_FIRST_PERSON) {
+          camera.layers.disable(Layers.CAMERA_LAYER_FIRST_PERSON_ONLY);
+          camera.layers.enable(Layers.CAMERA_LAYER_THIRD_PERSON_ONLY);
+          this.mode = CAMERA_MODE_THIRD_PERSON_NEAR;
+        } else if (this.mode === CAMERA_MODE_THIRD_PERSON_NEAR) {
+          camera.layers.enable(Layers.CAMERA_LAYER_FIRST_PERSON_ONLY);
+          camera.layers.disable(Layers.CAMERA_LAYER_THIRD_PERSON_ONLY);
+          this.mode = CAMERA_MODE_FIRST_PERSON;
+        }
+        this.isTPS = false;
+      }
+
       this.ensureListenerIsParentedCorrectly(scene);
 
       if (this.mode === CAMERA_MODE_FIRST_PERSON) {
-        this.viewingCameraRotator.on = false;
+        // this.viewingCameraRotator.on = false;
         this.avatarRig.object3D.updateMatrices();
         setMatrixWorld(this.viewingRig.object3D, this.avatarRig.object3D.matrixWorld);
         if (scene.is("vr-mode")) {
@@ -462,15 +489,25 @@ export class CameraSystem {
           setMatrixWorld(this.viewingCamera, this.avatarPOV.object3D.matrixWorld);
         }
       } else if (this.mode === CAMERA_MODE_THIRD_PERSON_NEAR || this.mode === CAMERA_MODE_THIRD_PERSON_FAR) {
+        // cyzyspace
+        this.viewingCameraRotator.on = false;
         if (this.mode === CAMERA_MODE_THIRD_PERSON_NEAR) {
-          translation.makeTranslation(0, 1, 3);
+          translation.makeTranslation(0, 0.2, 1.2);
         } else {
           translation.makeTranslation(0, 2, 8);
         }
         this.avatarRig.object3D.updateMatrices();
-        this.viewingRig.object3D.matrixWorld.copy(this.avatarRig.object3D.matrixWorld).multiply(translation);
+        setMatrixWorld(this.viewingRig.object3D, this.avatarRig.object3D.matrixWorld);
+        if (scene.is("vr-mode")) {
+          this.viewingCamera.updateMatrices();
+          setMatrixWorld(this.avatarPOV.object3D, this.viewingCamera.matrixWorld);
+        } else {
+          this.avatarPOV.object3D.updateMatrices();
+          setMatrixWorld(this.viewingCamera, this.avatarPOV.object3D.matrixWorld.multiply(translation));
+        }
+        this.avatarRig.object3D.updateMatrices();
+        this.viewingRig.object3D.matrixWorld.copy(this.avatarRig.object3D.matrixWorld);
         setMatrixWorld(this.viewingRig.object3D, this.viewingRig.object3D.matrixWorld);
-        this.avatarPOV.object3D.quaternion.copy(this.viewingCamera.quaternion);
         this.avatarPOV.object3D.matrixNeedsUpdate = true;
       } else if (this.mode === CAMERA_MODE_INSPECT) {
         this.avatarPOVRotator.on = false;

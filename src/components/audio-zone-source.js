@@ -1,3 +1,4 @@
+import { THREE } from "aframe";
 import { updateAudioSettings } from "../update-audio-settings";
 
 AFRAME.registerComponent("audio-zone-source", {
@@ -13,7 +14,7 @@ AFRAME.registerComponent("audio-zone-source", {
 
   getPosition: (() => {
     const sourcePos = new THREE.Vector3();
-    return function () {
+    return function() {
       const audio = APP.audios.get(this.el);
       if (audio) {
         audio.getWorldPosition(sourcePos);

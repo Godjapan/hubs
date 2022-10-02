@@ -153,8 +153,9 @@ AFRAME.registerComponent("video-texture-target", {
         const texture = videoTextureSource.renderTarget.texture;
         this.applyTexture(texture);
 
-        // Only update the renderTarget when the screens are in view
-        material.onBeforeRender = () => {
+        // Bit of a hack here to only update the renderTarget when the screens are in view
+        material.map.isVideoTexture = true;
+        material.map.update = () => {
           videoTextureSource.textureNeedsUpdate = true;
         };
       } else {
@@ -178,8 +179,6 @@ AFRAME.registerComponent("video-texture-target", {
 
           const video = createVideoOrAudioEl("video");
           video.srcObject = stream;
-          // Video is muted so autoplay is allowed
-          video.play();
 
           const texture = new THREE.VideoTexture(video);
           texture.flipY = false;

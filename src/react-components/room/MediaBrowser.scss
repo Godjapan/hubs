@@ -1,12 +1,25 @@
 @use "../styles/theme.scss";
 
 :local(.search-icon) {
-  color: theme.$text1-color;
+  *[stroke=\#000] {
+    stroke: theme.$text1-color;
+  }
+
+  *[fill=\#000] {
+    fill: theme.$text1-color;
+  }
 }
 
 :local(.favorite-icon) {
   margin-right: 4px;
-  color: theme.$favorite-color;
+
+  *[stroke=\#000] {
+    stroke: theme.$favorite-color;
+  }
+
+  *[fill=\#000] {
+    fill: theme.$favorite-color;
+  }
 }
 
 :local(.button-nav) {
@@ -55,7 +68,13 @@
   justify-content: center;
 
   svg {
-    color: theme.$text5-color;
+    *[stroke=\#000] {
+      stroke: theme.$text5-color;
+    }
+
+    *[fill=\#000] {
+      fill: theme.$text5-color;
+    }
   }
 
   &:hover {
@@ -71,7 +90,13 @@
     background-color: theme.$disabled-bg-color;
 
     svg {
-      color: theme.$disabled-icon-color;
+      *[stroke=\#000] {
+        stroke: theme.$disabled-icon-color;
+      }
+  
+      *[fill=\#000] {
+        fill: theme.$disabled-icon-color;
+      }
     }
   }
 }

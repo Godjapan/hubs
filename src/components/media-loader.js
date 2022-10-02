@@ -1,7 +1,6 @@
 import { computeObjectAABB, getBox, getScaleCoefficient } from "../utils/auto-box-collider";
 import {
   resolveUrl,
-  fetchContentType,
   getDefaultResolveQuality,
   injectCustomShaderChunks,
   addMeshScaleAnimation,
@@ -17,6 +16,7 @@ import {
 } from "../utils/media-url-utils";
 import { addAnimationComponents } from "../utils/animation";
 
+import configs from "../utils/configs";
 import loadingObjectSrc from "../assets/models/LoadingObject_Atom.glb";
 import { SOUND_MEDIA_LOADING, SOUND_MEDIA_LOADED } from "../systems/sound-effects-system";
 import { loadModel } from "./gltf-model-plus";
@@ -24,8 +24,7 @@ import { cloneObject3D, setMatrixWorld } from "../utils/three-utils";
 import { waitForDOMContentLoaded } from "../utils/async-utils";
 
 import { SHAPE } from "three-ammo/constants";
-import { addComponent, entityExists, removeComponent } from "bitecs";
-import { MediaLoading } from "../bit-components";
+import qsTruthy from "../utils/qs_truthy";
 
 let loadingObject;
 
@@ -34,6 +33,12 @@ waitForDOMContentLoaded().then(() => {
     loadingObject = gltf;
   });
 });
+
+const fetchContentType = url => {
+  return fetch(url, { method: "HEAD" }).then(r => r.headers.get("content-type"));
+};
+
+const disableDynamicRoomPath = qsTruthy("disableDynamicRoomPath"); // cyzyspace
 
 AFRAME.registerComponent("media-loader", {
   schema: {
@@ -282,13 +287,7 @@ AFRAME.registerComponent("media-loader", {
         this.data.linkedEl.addEventListener("componentremoved", this.handleLinkedElRemoved);
       }
 
-      // TODO this does duplicate work in some cases, but finish() is the only consistent place to do it
-      this.contentBounds = getBox(this.el, this.el.getObject3D("mesh")).getSize(new THREE.Vector3());
-
       el.emit("media-loaded");
-      if (el.eid && entityExists(APP.world, el.eid)) {
-        removeComponent(APP.world, MediaLoading, el.eid);
-      }
     };
 
     if (this.data.animate) {
@@ -347,12 +346,17 @@ AFRAME.registerComponent("media-loader", {
     try {
       if ((forceLocalRefresh || srcChanged) && !this.showLoaderTimeout) {
         this.showLoaderTimeout = setTimeout(this.showLoader, 100);
-        addComponent(APP.world, MediaLoading, this.el.eid);
       }
 
       //check if url is an anchor hash e.g. #Spawn_Point_1
       if (src.charAt(0) === "#") {
         src = this.data.src = `${window.location.origin}${window.location.pathname}${window.location.search}${src}`;
+      }
+
+      //cyzyspace: replace placeholders.
+      if (!disableDynamicRoomPath) {
+        const roomId = window.location.pathname.split("/")[1] || configs.feature("default_room_id");
+        src = this.data.src = src.replace("__ROOM_ID__", roomId);
       }
 
       let canonicalUrl = src;
@@ -477,7 +481,32 @@ AFRAME.registerComponent("media-loader", {
                 isFlat: true
               });
             } else if (this.data.mediaOptions.href) {
-              this.el.setAttribute("hover-menu__link", { template: "#link-hover-menu", isFlat: true });
+              // cyzyspace
+              const href = this.data.mediaOptions.href;
+              if (href.match("__ROOM_ID__")) {
+                const roomId = window.location.pathname.split("/")[1] || configs.feature("default_room_id");
+                const replacedHref = href.replace("__ROOM_ID__", roomId);
+
+                const validationUrl = new URL(replacedHref);
+                const searchParams = validationUrl.searchParams;
+                searchParams.append("validate", "1");
+                validationUrl.search = searchParams.toString();
+
+                fetch(validationUrl.toString(), { method: "GET" })
+                  .then(v => {
+                    if (v.status === 200) {
+                      this.el.setAttribute("hover-menu__link", { template: "#link-hover-menu", isFlat: true });
+                    } else {
+                      console.log("head response - error:", v.status);
+                    }
+                  })
+                  .catch(() => {
+                    console.log("head request - failed:", replacedHref);
+                  });
+                this.data.mediaOptions.href = replacedHref;
+              } else {
+                this.el.setAttribute("hover-menu__link", { template: "#link-hover-menu", isFlat: true });
+              }
             }
           },
           { once: true }

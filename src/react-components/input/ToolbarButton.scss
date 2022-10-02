@@ -31,13 +31,13 @@
   transition: background-color 0.1s ease-in-out, border-color 0.1s ease-in-out;
 
   svg {
-    color: theme.$toolbar-icon-color;
-
     *[stroke=\#000] {
+      stroke: theme.$toolbar-icon-color;
       transition: stroke 0.1s ease-in-out;
     }
 
     *[fill=\#000] {
+      fill: theme.$toolbar-icon-color;
       transition: fill 0.1s ease-in-out;
     }
   }
@@ -53,7 +53,13 @@
     border-color: theme.$toolbar-basic-border-color;
     background-color: transparent;
     svg {
-      color: theme.$toolbar-basic-icon-color;
+      *[stroke=\#000] {
+        stroke: theme.$toolbar-basic-icon-color;
+      }
+  
+      *[fill=\#000] {
+        fill: theme.$toolbar-basic-icon-color;
+      }
     }
   }  
 
@@ -73,7 +79,13 @@
       background-color: theme.$toolbar-icon-selected-bg;
     }
     svg {
-      color: theme.$toolbar-basic-selected-icon-color;
+      *[stroke=\#000] {
+        stroke: theme.$toolbar-basic-selected-icon-color;
+      }
+  
+      *[fill=\#000] {
+        fill: theme.$toolbar-basic-selected-icon-color;
+      }
     }
 
     label {
@@ -117,7 +129,13 @@
       background-color: theme.$toolbar-icon-selected-bg;
 
       svg {
-        color: theme.$toolbar-basic-icon-color;
+        *[stroke=\#000] {
+          stroke: theme.$toolbar-basic-icon-color;
+        }
+    
+        *[fill=\#000] {
+          fill: theme.$toolbar-basic-icon-color;
+        }
       }
     }
 
@@ -131,7 +149,13 @@
         background-color: theme.$toolbar-basic-color-hover;
 
         svg {
-          color: theme.$primary-color-hover;
+          *[stroke=\#000] {
+            stroke: theme.$primary-color-hover;
+          }
+      
+          *[fill=\#000] {
+            fill: theme.$primary-color-hover;
+          }
         }
       }
     }
@@ -141,7 +165,13 @@
         border-color: theme.$primary-color-pressed;
 
         svg {
-          color: theme.$primary-color-pressed;
+          *[stroke=\#000] {
+            stroke: theme.$primary-color-pressed;
+          }
+      
+          *[fill=\#000] {
+            fill: theme.$primary-color-pressed;
+          }
         }
       }
     }
@@ -169,7 +199,13 @@
       background-color: theme.$toolbar-icon-selected-bg;
 
       svg {
-        color: theme.$accept-color;
+        *[stroke=\#000] {
+          stroke: theme.$accept-color;
+        }
+    
+        *[fill=\#000] {
+          fill: theme.$accept-color;
+        }
       }
     }
 
@@ -182,7 +218,13 @@
         border-color: theme.$accept-color-hover;
 
         svg {
-          color: theme.$accept-color-hover;
+          *[stroke=\#000] {
+            stroke: theme.$accept-color-hover;
+          }
+      
+          *[fill=\#000] {
+            fill: theme.$accept-color-hover;
+          }
         }
       }
     }
@@ -192,7 +234,13 @@
         border-color: theme.$accept-color-pressed;
 
         svg {
-          color: theme.$accept-color-pressed;
+          *[stroke=\#000] {
+            stroke: theme.$accept-color-pressed;
+          }
+      
+          *[fill=\#000] {
+            fill: theme.$accept-color-pressed;
+          }
         }
       }
     }
@@ -218,7 +266,13 @@
       background-color: theme.$toolbar-icon-selected-bg;
 
       svg {
-        color: theme.$cancel-color;
+        *[stroke=\#000] {
+          stroke: theme.$cancel-color;
+        }
+    
+        *[fill=\#000] {
+          fill: theme.$cancel-color;
+        }
       }
     }
 
@@ -231,7 +285,13 @@
         border-color: theme.$cancel-color-hover;
 
         svg {
-          color: theme.$cancel-color-hover;
+          *[stroke=\#000] {
+            stroke: theme.$cancel-color-hover;
+          }
+      
+          *[fill=\#000] {
+            fill: theme.$cancel-color-hover;
+          }
         }
       }
     }
@@ -241,7 +301,13 @@
         border-color: theme.$cancel-color-pressed;
 
         svg {
-          color: theme.$cancel-color-pressed;
+          *[stroke=\#000] {
+            stroke: theme.$cancel-color-pressed;
+          }
+      
+          *[fill=\#000] {
+            fill: theme.$cancel-color-pressed;
+          }
         }
       }
     }
@@ -268,7 +334,13 @@
       background-color: theme.$toolbar-icon-selected-bg;
 
       svg {
-        color: theme.$accent1-color;
+        *[stroke=\#000] {
+          stroke: theme.$accent1-color;
+        }
+    
+        *[fill=\#000] {
+          fill: theme.$accent1-color;
+        }
       }
     }
 
@@ -281,7 +353,13 @@
         border-color: theme.$accent1-color-hover;
 
         svg {
-          color: theme.$accent1-color-hover;
+          *[stroke=\#000] {
+            stroke: theme.$accent1-color-hover;
+          }
+      
+          *[fill=\#000] {
+            fill: theme.$accent1-color-hover;
+          }
         }
       }
     }
@@ -291,7 +369,13 @@
         border-color: theme.$accent1-color-pressed;
 
         svg {
-          color: theme.$accent1-color-pressed;
+          *[stroke=\#000] {
+            stroke: theme.$accent1-color-pressed;
+          }
+      
+          *[fill=\#000] {
+            fill: theme.$accent1-color-pressed;
+          }
         }
       }
     }
@@ -318,7 +402,13 @@
       background-color: theme.$toolbar-icon-selected-bg;
 
       svg {
-        color: theme.$accent2-color;
+        *[stroke=\#000] {
+          stroke: theme.$accent2-color;
+        }
+    
+        *[fill=\#000] {
+          fill: theme.$accent2-color;
+        }
       }
     }
 
@@ -331,7 +421,13 @@
         border-color: theme.$accent2-color-hover;
 
         svg {
-          color: theme.$accent2-color-hover;
+          *[stroke=\#000] {
+            stroke: theme.$accent2-color-hover;
+          }
+      
+          *[fill=\#000] {
+            fill: theme.$accent2-color-hover;
+          }
         }
       }
     }
@@ -341,7 +437,13 @@
         border-color: theme.$accent2-color-pressed;
 
         svg {
-          color: theme.$accent2-color-pressed;
+          *[stroke=\#000] {
+            stroke: theme.$accent2-color-pressed;
+          }
+      
+          *[fill=\#000] {
+            fill: theme.$accent2-color-pressed;
+          }
         }
       }
     }
@@ -368,8 +470,14 @@
       background-color: theme.$toolbar-icon-selected-bg;
 
       svg {
-        color: theme.$accent3-color;
-         }
+        *[stroke=\#000] {
+          stroke: theme.$accent3-color;
+        }
+    
+        *[fill=\#000] {
+          fill: theme.$accent3-color;
+        }
+      }
     }
 
     label {
@@ -381,7 +489,13 @@
         border-color: theme.$accent3-color-hover;
 
         svg {
-          color: theme.$accent3-color-hover;
+          *[stroke=\#000] {
+            stroke: theme.$accent3-color-hover;
+          }
+      
+          *[fill=\#000] {
+            fill: theme.$accent3-color-hover;
+          }
         }
       }
     }
@@ -391,7 +505,13 @@
         border-color: theme.$accent3-color-pressed;
 
         svg {
-          color: theme.$accent3-color-pressed;
+          *[stroke=\#000] {
+            stroke: theme.$accent3-color-pressed;
+          }
+      
+          *[fill=\#000] {
+            fill: theme.$accent3-color-pressed;
+          }
         }
       }
     }
@@ -418,7 +538,13 @@
       background-color: theme.$toolbar-icon-selected-bg;
 
       svg {
-        color: theme.$accent4-color;
+        *[stroke=\#000] {
+          stroke: theme.$accent4-color;
+        }
+    
+        *[fill=\#000] {
+          fill: theme.$accent4-color;
+        }
       }
     }
 
@@ -431,7 +557,13 @@
         border-color: theme.$accent4-color-hover;
 
         svg {
-          color: theme.$accent4-color-hover;
+          *[stroke=\#000] {
+            stroke: theme.$accent4-color-hover;
+          }
+      
+          *[fill=\#000] {
+            fill: theme.$accent4-color-hover;
+          }
         }
       }
     }
@@ -441,7 +573,13 @@
         border-color: theme.$accent4-color-pressed;
 
         svg {
-          color: theme.$accent4-color-pressed;
+          *[stroke=\#000] {
+            stroke: theme.$accent4-color-pressed;
+          }
+      
+          *[fill=\#000] {
+            fill: theme.$accent4-color-pressed;
+          }
         }
       }
     }
@@ -468,7 +606,13 @@
       background-color: theme.$toolbar-icon-selected-bg;
 
       svg {
-        color: theme.$accent5-color;
+        *[stroke=\#000] {
+          stroke: theme.$accent5-color;
+        }
+    
+        *[fill=\#000] {
+          fill: theme.$accent5-color;
+        }
       }
     }
 
@@ -481,7 +625,13 @@
         border-color: theme.$accent5-color-hover;
 
         svg {
-          color: theme.$accent5-color-hover;
+          *[stroke=\#000] {
+            stroke: theme.$accent5-color-hover;
+          }
+      
+          *[fill=\#000] {
+            fill: theme.$accent5-color-hover;
+          }
         }
       }
     }
@@ -490,7 +640,13 @@
       :local(.icon-container) {
         border-color: theme.$accent5-color-pressed;
         svg {
-          color: theme.$accent5-color-pressed;
+          *[stroke=\#000] {
+            stroke: theme.$accent5-color-pressed;
+          }
+      
+          *[fill=\#000] {
+            fill: theme.$accent5-color-pressed;
+          }
         }
       }
     }

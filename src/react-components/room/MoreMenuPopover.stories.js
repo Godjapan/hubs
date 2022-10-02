@@ -11,7 +11,6 @@ import { ReactComponent as TextDocumentIcon } from "../icons/TextDocument.svg";
 import { ReactComponent as SupportIcon } from "../icons/Support.svg";
 import { ReactComponent as ShieldIcon } from "../icons/Shield.svg";
 import { CompactMoreMenuButton, MoreMenuContextProvider, MoreMenuPopoverButton } from "./MoreMenuPopover";
-import { TERMS, PRIVACY } from "../../constants";
 
 export default {
   title: "Room/MoreMenuPopover",
@@ -59,13 +58,13 @@ const menu = [
         id: "tos",
         label: "Terms of Service",
         icon: TextDocumentIcon,
-        href: TERMS
+        href: "https://github.com/mozilla/hubs/blob/master/TERMS.md"
       },
       {
         id: "privacy",
         label: "Privacy Notice",
         icon: ShieldIcon,
-        href: PRIVACY
+        href: "https://github.com/mozilla/hubs/blob/master/PRIVACY.md"
       }
     ]
   }

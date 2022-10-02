@@ -1,4 +1,3 @@
-// NOTE when changing be sure to check hardcoded mask values in hub.html
 export const Layers = {
   // These 3 layers are hardcoded in THREE
   CAMERA_LAYER_DEFAULT: 0,
@@ -10,8 +9,7 @@ export const Layers = {
   CAMERA_LAYER_VIDEO_TEXTURE_TARGET: 5,
 
   CAMERA_LAYER_THIRD_PERSON_ONLY: 6,
-  CAMERA_LAYER_FIRST_PERSON_ONLY: 7,
-  CAMERA_LAYER_UI: 8
+  CAMERA_LAYER_FIRST_PERSON_ONLY: 7
 };
 
 /**
@@ -21,22 +19,35 @@ export const Layers = {
  */
 AFRAME.registerComponent("layers", {
   schema: {
-    mask: { default: Layers.CAMERA_LAYER_DEFAULT },
-    recursive: { default: false }
+    reflection: { type: "boolean", default: false },
+    inWorldHud: { type: "boolean", default: false },
+    exclusive: { type: "boolean", default: false } // if true, only these layers will be set
   },
   init() {
     this.update = this.update.bind(this);
-    this.el.addEventListener("object3dset", this.update);
+    this.el.addEventListener("model-loaded", this.update);
   },
-  update() {
+  update(oldData) {
     const obj = this.el.object3D;
-    if (this.data.recursive) {
-      obj.traverse(o => (o.layers.mask = this.data.mask));
-    } else {
-      obj.layers.mask = this.data.mask;
+
+    if (this.data.exclusive) {
+      obj.traverse(o => (o.layers.mask = 0));
+    }
+
+    for (const [name, layer] of Object.entries(Layers)) {
+      const oldValue = oldData[name];
+      const newValue = this.data[name];
+
+      if (oldValue !== newValue) {
+        if (newValue) {
+          obj.traverse(o => o.layers.enable(layer));
+        } else {
+          obj.traverse(o => o.layers.disable(layer));
+        }
+      }
     }
   },
   remove() {
-    this.el.removeEventListener("object3dset", this.update);
+    this.el.removeEventListener("model-loaded", this.update);
   }
 });

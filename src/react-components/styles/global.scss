@@ -464,5 +464,7 @@ summary {
 }
 
 .hmc-logo {
-  color: theme.$text1-color;
+  [fill] {
+    fill: theme.$text1-color;
+  }
 }

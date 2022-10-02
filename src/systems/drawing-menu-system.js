@@ -1,5 +1,3 @@
-import { hasComponent } from "bitecs";
-import { SingleActionButton } from "../bit-components";
 import { waitForDOMContentLoaded } from "../utils/async-utils";
 import { SOUND_PEN_UNDO_DRAW } from "./sound-effects-system";
 
@@ -85,7 +83,8 @@ export class DrawingMenuSystem {
           if (
             hovered &&
             userinput.get(interaction.options[remote].grabPath) &&
-            hasComponent(APP.world, SingleActionButton, hovered.eid)
+            hovered.components.tags &&
+            hovered.components.tags.data.singleActionButton
           ) {
             if (this.buttonMap[hovered.object3D.uuid]) {
               const networkedEntity = this.buttonMap[hovered.object3D.uuid];

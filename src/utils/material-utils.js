@@ -35,7 +35,6 @@ class HubsMeshBasicMaterial extends THREE.MeshBasicMaterial {
     const material = new HubsMeshBasicMaterial();
 
     THREE.Material.prototype.copy.call(material, source);
-    material.onBeforeRender = source.onBeforeRender;
 
     material.color.copy(source.color);
 
@@ -131,7 +130,6 @@ class HubsMeshPhongMaterial extends THREE.MeshPhongMaterial {
     const material = new HubsMeshPhongMaterial();
 
     THREE.Material.prototype.copy.call(material, source);
-    material.onBeforeRender = source.onBeforeRender;
 
     material.color.copy(source.color);
 

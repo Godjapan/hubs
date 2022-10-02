@@ -1,6 +1,4 @@
-import { addComponent, removeComponent } from "bitecs";
 import { TYPE } from "three-ammo/constants";
-import { HandCollisionTarget } from "../bit-components";
 import { emojis } from "./emoji";
 
 const COLLISION_LAYERS = require("../constants").COLLISION_LAYERS;
@@ -116,7 +114,7 @@ AFRAME.registerComponent("emoji-hud", {
     if (e.detail === "frozen") {
       this._updateOffset();
       for (let i = 0; i < this.spawnerEntities.length; i++) {
-        addComponent(APP.world, HandCollisionTarget, this.spawnerEntities[i].eid);
+        this.spawnerEntities[i].components.tags.data.isHandCollisionTarget = true;
       }
     }
   },
@@ -124,7 +122,7 @@ AFRAME.registerComponent("emoji-hud", {
   _onThaw(e) {
     if (e.detail === "frozen") {
       for (let i = 0; i < this.spawnerEntities.length; i++) {
-        removeComponent(APP.world, HandCollisionTarget, this.spawnerEntities[i].eid);
+        this.spawnerEntities[i].components.tags.data.isHandCollisionTarget = false;
       }
     }
   },

@@ -138,7 +138,9 @@ header {
   svg {
     margin-left: 21px;
     cursor: pointer;
-    color: theme.$text1-color;
+      *[fill]{
+        fill: theme.$text1-color;
+      }
   }
   li:first-child {
     padding-top: 0;

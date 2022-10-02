@@ -3,20 +3,28 @@ import PropTypes from "prop-types";
 import { LoadingScreenLayout } from "../layout/LoadingScreenLayout";
 import { Spinner } from "../misc/Spinner";
 import { useRandomMessageTransition } from "./useRandomMessageTransition";
+import cyzyHowToControlImg from "../../assets/images/cyzy-how-to-control.png";
 export function LoadingScreen({ message, infoMessages }) {
   const infoMessage = useRandomMessageTransition(infoMessages);
   return (
     <LoadingScreenLayout
       center={
         <>
-          <Spinner />
-          <p>{message}</p>
+          <div className="cyzy-loading-message-wrap">
+            <div className="cyzy-spinner-wrap">
+              <Spinner />
+            </div>
+            <p>{message}</p>
+          </div>
+          <img src={cyzyHowToControlImg} className="cyzy-how-to-control" alt={"how to control"} />
         </>
       }
       bottom={
         <>
-          <h3>{infoMessage.heading}</h3>
-          <p>{infoMessage.message}</p>
+          <div className="cyzy-loading-tips-wrap">
+            <h3>{infoMessage.heading}</h3>
+            <p>{infoMessage.message}</p>
+          </div>
         </>
       }
     />

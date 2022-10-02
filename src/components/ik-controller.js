@@ -1,5 +1,3 @@
-import { defineQuery } from "bitecs";
-import { CameraTool } from "../bit-components";
 import { waitForDOMContentLoaded } from "../utils/async-utils";
 const { Vector3, Quaternion, Matrix4, Euler } = THREE;
 
@@ -16,8 +14,6 @@ function quaternionAlmostEquals(epsilon, u, v) {
       Math.abs(-u.w - v.w) < epsilon)
   );
 }
-
-const cameraToolsQuery = defineQuery([CameraTool]);
 
 /**
  * Provides access to the end effectors for IK.
@@ -325,7 +321,7 @@ AFRAME.registerComponent("ik-controller", {
   _updateIsInView: (function() {
     const frustum = new THREE.Frustum();
     const frustumMatrix = new THREE.Matrix4();
-    const tmpPos = new THREE.Vector3();
+    const cameraWorld = new THREE.Vector3();
     const isInViewOfCamera = (screenCamera, pos) => {
       frustumMatrix.multiplyMatrices(screenCamera.projectionMatrix, screenCamera.matrixWorldInverse);
       frustum.setFromProjectionMatrix(frustumMatrix);
@@ -333,23 +329,22 @@ AFRAME.registerComponent("ik-controller", {
     };
 
     return function() {
-      if (!this.playerCamera || this.data.alwaysUpdate) return;
+      if (!this.playerCamera) return;
 
       const camera = this.ikRoot.camera.object3D;
-      camera.getWorldPosition(tmpPos);
+      camera.getWorldPosition(cameraWorld);
 
       // Check player camera
-      this.isInView = isInViewOfCamera(this.playerCamera, tmpPos);
+      this.isInView = isInViewOfCamera(this.playerCamera, cameraWorld);
 
       if (!this.isInView) {
-        const world = APP.world;
-        // Check camera tools if they are rendering to viewfinder
-        const cameraTools = cameraToolsQuery(world);
-        for (const eid of cameraTools) {
-          const screenObj = world.eid2obj.get(CameraTool.screenRef[eid]);
-          const cameraObj = world.eid2obj.get(CameraTool.cameraRef[eid]);
-          this.isInView = screenObj.visible && isInViewOfCamera(cameraObj, tmpPos);
-          if (this.isInView) break;
+        // Check in-game camera if rendering to viewfinder and owned
+        const cameraTools = this.el.sceneEl.systems["camera-tools"];
+
+        if (cameraTools) {
+          cameraTools.ifMyCameraRenderingViewfinder(cameraTool => {
+            this.isInView = this.isInView || isInViewOfCamera(cameraTool.camera, cameraWorld);
+          });
         }
       }
     };

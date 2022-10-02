@@ -25,9 +25,6 @@
   -ms-user-select: none;
   user-select: none;
 }
-:global(.rs-counter-id) {
-  width: 80px;
-}
 
 :global(.rs-base) {
   right: 10px;
@@ -37,5 +34,4 @@
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  width: 350px;
 }
