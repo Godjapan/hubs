@@ -49,15 +49,15 @@ AFRAME.registerComponent("open-media-button", {
         if (!this.data.onlyOpenLink) {
           let hubId;
           if (await isLocalHubsAvatarUrl(src)) {
-            label = "use avatar";
+            label = "このアバターを使う";
           } else if ((await isLocalHubsSceneUrl(src)) && mayChangeScene) {
-            label = "use scene";
+            label = "このシーンを使う";
           } else if ((hubId = await isHubsRoomUrl(src))) {
             const url = new URL(src);
             if (url.hash && window.APP.hub.hub_id === hubId) {
-              label = "go to";
+              label = "移動する";
             } else {
-              label = "visit room";
+              label = "ルームを移動する";
             }
           }
         }
