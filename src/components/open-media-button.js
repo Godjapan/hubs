@@ -19,7 +19,7 @@ AFRAME.registerComponent("open-media-button", {
 
       this.el.object3D.visible = !!visible;
 
-      // cyzyspace
+      // metawith
       if (src && src.match("__ROOM_ID__")) {
         const roomId = window.location.pathname.split("/")[1];
         const replacedHref = src.replace("__ROOM_ID__", roomId);
@@ -49,15 +49,15 @@ AFRAME.registerComponent("open-media-button", {
         if (!this.data.onlyOpenLink) {
           let hubId;
           if (await isLocalHubsAvatarUrl(src)) {
-            label = "このアバターを使う";
+            label = "Use Avater";
           } else if ((await isLocalHubsSceneUrl(src)) && mayChangeScene) {
-            label = "このシーンを使う";
+            label = "Use scene";
           } else if ((hubId = await isHubsRoomUrl(src))) {
             const url = new URL(src);
             if (url.hash && window.APP.hub.hub_id === hubId) {
-              label = "移動する";
+              label = "Enter";
             } else {
-              label = "ルームを移動する";
+              label = "Visit";
             }
           }
         }
@@ -73,7 +73,7 @@ AFRAME.registerComponent("open-media-button", {
       let hubId;
       if (this.data.onlyOpenLink) {
         await exitImmersive();
-        // cyzyspace
+        // metawith
         const href = this.src;
         if (href.match("__ROOM_ID__")) {
           const roomId = window.location.pathname.split("/")[1];
@@ -101,7 +101,7 @@ AFRAME.registerComponent("open-media-button", {
           location.href = this.src;
         }
       } else {
-        // cyzyspace
+        // metawith
         if (this.src.slice(0, 1) === "#") {
           window.location = this.src;
         } else {
