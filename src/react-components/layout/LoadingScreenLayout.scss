@@ -22,7 +22,7 @@
 
 :local(.center) {
   flex-grow: 0;
-  .cyzy-how-to-control {
+  .metawith-howto-control {
     display: block;
     margin: 8px auto 0;
     max-width: 800px;
@@ -33,11 +33,11 @@
       max-height: none;
     }
   }
-  .cyzy-loading-message-wrap {
+  .metawith-loading-message-wrap {
     display: flex;
     align-items: center;
   }
-  .cyzy-spinner-wrap {
+  .metawith-spinner-wrap {
     width: 30px;
     height: 30px;
     margin-right: 16px;
