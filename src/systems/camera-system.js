@@ -165,7 +165,7 @@ const NEXT_MODES = {
   [CAMERA_MODE_THIRD_PERSON_FAR]: CAMERA_MODE_FIRST_PERSON
 };
 
-// cyzyspace
+// metawith-change
 const isHeadSet = AFRAME.utils.device.checkHeadsetConnected();
 
 const ensureLightsAreSeenByCamera = function(o) {
@@ -208,7 +208,7 @@ export class CameraSystem {
     this.mode = CAMERA_MODE_SCENE_PREVIEW;
     this.snapshot = { audioTransform: new THREE.Matrix4(), matrixWorld: new THREE.Matrix4() };
     this.audioSourceTargetTransform = new THREE.Matrix4();
-    this.isTPS = false; // cyzyspace
+    this.isTPS = false; // metawith-change
 
     if (customFOV) {
       this.viewingCamera.fov = customFOV;
@@ -246,7 +246,7 @@ export class CameraSystem {
     });
   }
 
-  // cyzyspace
+  // metawith-change
   toggleTPS() {
     this.isTPS = true;
     return this.mode;
@@ -370,12 +370,12 @@ export class CameraSystem {
         this.avatarPOV.object3D.add(scene.audioListener);
       } else if (
         this.mode === CAMERA_MODE_FIRST_PERSON &&
-        scene.audioListener.parent !== this.viewingCamera // cyzyspace
+        scene.audioListener.parent !== this.viewingCamera // metawith-change
       ) {
         this.viewingCamera.add(scene.audioListener);
       } else if (
         (this.mode === CAMERA_MODE_THIRD_PERSON_NEAR || this.mode === CAMERA_MODE_THIRD_PERSON_FAR) &&
-        scene.audioListener.parent !== this.avatarPOV.object3D // cyzyspace
+        scene.audioListener.parent !== this.avatarPOV.object3D // metawith-change
       ) {
         this.avatarPOV.object3D.add(scene.audioListener);
       }
@@ -429,7 +429,7 @@ export class CameraSystem {
             scale
           )
         );
-        scene.systems["hubs-systems"].characterController.fly = false; //cyzy space
+        scene.systems["hubs-systems"].characterController.fly = false; //metawith-change
         this.avatarPOV.object3D.updateMatrices();
         setMatrixWorld(this.avatarPOV.object3D, this.viewingCamera.matrixWorld);
       }
@@ -460,7 +460,7 @@ export class CameraSystem {
         this.nextMode();
       }
 
-      // cyzyspace
+      // metawith-change
       if (!isHeadSet && this.isTPS) {
         const camera = scene.camera;
         if (this.mode === CAMERA_MODE_FIRST_PERSON) {
@@ -489,7 +489,7 @@ export class CameraSystem {
           setMatrixWorld(this.viewingCamera, this.avatarPOV.object3D.matrixWorld);
         }
       } else if (this.mode === CAMERA_MODE_THIRD_PERSON_NEAR || this.mode === CAMERA_MODE_THIRD_PERSON_FAR) {
-        // cyzyspace
+        // metawith-change
         this.viewingCameraRotator.on = false;
         if (this.mode === CAMERA_MODE_THIRD_PERSON_NEAR) {
           translation.makeTranslation(0, 0.2, 1.2);

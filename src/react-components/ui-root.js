@@ -93,7 +93,7 @@ import { TweetModalContainer } from "./room/TweetModalContainer";
 import { TipContainer, FullscreenTip } from "./room/TipContainer";
 import { SpectatingLabel } from "./room/SpectatingLabel";
 import { SignInMessages } from "./auth/SignInModal";
-import { ToggleTpsContainer } from "./room/ToggleTpsContainer"; // cyzyspace
+import { ToggleTpsContainer } from "./room/ToggleTpsContainer"; // metawith-change
 import { MediaDevicesEvents } from "../utils/media-devices-utils";
 
 const avatarEditorDebug = qsTruthy("avatarEditorDebug");
@@ -481,7 +481,7 @@ class UIRoot extends Component {
     this.setState({ showVideoShareFailed: true });
   };
 
-  // cyzyspace
+  // metawith-change
   toggleTPS = () => {
     this.setState({ isTPS: this.props.scene.systems["hubs-systems"].cameraSystem.toggleTPS() !== 1 });
   };
@@ -622,7 +622,7 @@ class UIRoot extends Component {
     // Push the new history state before going into VR, otherwise menu button will take us back
     clearHistoryState(this.props.history);
 
-    // cyzyspace
+    // metawith-change
     //restore hash
     if (this.props.locationHash) {
       console.log("restore stored hash", this.props.locationHash);
@@ -1569,7 +1569,7 @@ class UIRoot extends Component {
                     {entered && (
                       <>
                         <AudioPopoverContainer scene={this.props.scene} />
-                        {/* cyzyspace */}
+                        {/* metawith-change */}
                         <ToggleTpsContainer
                           scene={this.props.scene}
                           isTPS={this.state.isTPS}

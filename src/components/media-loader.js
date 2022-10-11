@@ -38,7 +38,7 @@ const fetchContentType = url => {
   return fetch(url, { method: "HEAD" }).then(r => r.headers.get("content-type"));
 };
 
-const disableDynamicRoomPath = qsTruthy("disableDynamicRoomPath"); // cyzyspace
+const disableDynamicRoomPath = qsTruthy("disableDynamicRoomPath"); // metawith-change
 
 AFRAME.registerComponent("media-loader", {
   schema: {
@@ -353,7 +353,7 @@ AFRAME.registerComponent("media-loader", {
         src = this.data.src = `${window.location.origin}${window.location.pathname}${window.location.search}${src}`;
       }
 
-      //cyzyspace: replace placeholders.
+      //metawith-change: replace placeholders.
       if (!disableDynamicRoomPath) {
         const roomId = window.location.pathname.split("/")[1] || configs.feature("default_room_id");
         src = this.data.src = src.replace("__ROOM_ID__", roomId);
@@ -481,7 +481,7 @@ AFRAME.registerComponent("media-loader", {
                 isFlat: true
               });
             } else if (this.data.mediaOptions.href) {
-              // cyzyspace
+              // metawith-change
               const href = this.data.mediaOptions.href;
               if (href.match("__ROOM_ID__")) {
                 const roomId = window.location.pathname.split("/")[1] || configs.feature("default_room_id");

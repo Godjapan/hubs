@@ -744,7 +744,7 @@ AFRAME.registerComponent("media-video", {
 
     this.playPauseButton.object3D.visible = this.seekForwardButton.object3D.visible = this.seekBackButton.object3D.visible = mayModifyPlayHead;
 
-    // cyzyspace
+    // metawith-change
     const href = mediaLoader.mediaOptions.href;
     if (href && href.match("__ROOM_ID__")) {
       this.linkButton.object3D.visible = false;

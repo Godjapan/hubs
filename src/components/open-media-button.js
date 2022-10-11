@@ -13,7 +13,7 @@ AFRAME.registerComponent("open-media-button", {
     this.updateSrc = async () => {
       if (!this.targetEl.parentNode) return; // If removed
       const mediaLoader = this.targetEl.components["media-loader"].data;
-      let src = (this.src = (mediaLoader.mediaOptions && mediaLoader.mediaOptions.href) || mediaLoader.src); // cyzyspace
+      let src = (this.src = (mediaLoader.mediaOptions && mediaLoader.mediaOptions.href) || mediaLoader.src); // metawith-change
       const visible = src && guessContentType(src) !== "video/vnd.hubs-webrtc";
       const mayChangeScene = this.el.sceneEl.systems.permissions.canOrWillIfCreator("update_hub");
 
