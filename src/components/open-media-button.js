@@ -45,7 +45,7 @@ AFRAME.registerComponent("open-media-button", {
       }
 
       if (visible) {
-        let label = "open link";
+        let label = "Enter";//metawith open link to Enter
         if (!this.data.onlyOpenLink) {
           let hubId;
           if (await isLocalHubsAvatarUrl(src)) {
