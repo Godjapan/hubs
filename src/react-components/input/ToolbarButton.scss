@@ -588,8 +588,9 @@
 
 :local(.accent5) {
   :local(.icon-container) {
-    background-color: theme.$accent5-color;
-    border-color: theme.$accent5-border-color;
+    /*background-color: theme.$accent5-color;*/
+    /*border-color: theme.$accent5-border-color;*/
+    background-image: url(https://godjapan-test.tokyo/file/square_purple.png)!important;
   }  
 
   &:hover :local(.icon-container) {
