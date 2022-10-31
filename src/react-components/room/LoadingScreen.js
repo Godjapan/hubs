@@ -4,6 +4,7 @@ import { LoadingScreenLayout } from "../layout/LoadingScreenLayout";
 import { Spinner } from "../misc/Spinner";
 import { useRandomMessageTransition } from "./useRandomMessageTransition";
 import MetawithHowToControlImg from "../../assets/images/metawith_howto_control.png";
+import PurpleButtonImg from "../../assets/images/square_purple.png";
 export function LoadingScreen({ message, infoMessages }) {
   const infoMessage = useRandomMessageTransition(infoMessages);
   return (
