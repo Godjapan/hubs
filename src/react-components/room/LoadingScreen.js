@@ -5,6 +5,11 @@ import { Spinner } from "../misc/Spinner";
 import { useRandomMessageTransition } from "./useRandomMessageTransition";
 import MetawithHowToControlImg from "../../assets/images/metawith_howto_control.png";
 import PurpleButtonImg from "../../assets/images/square_purple.png";
+import GreenButtonImg from "../../assets/images/square_green.png";
+import OrangeButtonImg from "../../assets/images/square_orange.png";
+import BlueButtonImg from "../../assets/images/square_blue.png";
+import PinkButtonImg from "../../assets/images/square_pink.png";
+import GrayButtonImg from "../../assets/images/square_gray.png";
 export function LoadingScreen({ message, infoMessages }) {
   const infoMessage = useRandomMessageTransition(infoMessages);
   return (
